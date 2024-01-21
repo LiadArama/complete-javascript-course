@@ -92,3 +92,30 @@ team2 < team1 && console.log('Team 2 is likely to win');
 printGoals(...game.scored);
 
 /************************************************************************************/
+
+// Coding Challenge #4
+
+document.body.append(document.createElement('textarea'));
+document.body.append(document.createElement('button'));
+document.querySelector('button').textContent = 'Submit';
+
+document.querySelector('button').addEventListener('click', () => {
+  const text = document.querySelector('textarea').value;
+  console.log(text);
+  //const splittedTextArr =  text.split(/[\n\s]+/); - REGEX USAGE for whitespace and newline, thus we can spare using the trim method.
+  const splittedTextArr = text.split('\n');
+  for (const [wordIndex, word] of splittedTextArr.entries()) {
+    let [firstWord, secondWord] = word.trim().toLowerCase().split('_');
+    if (secondWord) {
+      console.log(
+        [
+          firstWord,
+          secondWord.replace(secondWord[0], secondWord[0].toUpperCase()),
+        ]
+          .join('')
+          .padEnd(30, ' '),
+        '✅'.repeat(wordIndex + 1)
+      );
+    } else console.log(firstWord.padEnd(30, ' '), '✅'.repeat(wordIndex + 1));
+  }
+});
