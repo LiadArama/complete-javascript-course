@@ -186,3 +186,77 @@ btnClose.addEventListener('click', function (event) {
   containerApp.style.opacity = 0;
   labelWelcome.textContent = 'Log in to get started';
 });
+
+btnLoan.addEventListener('click', function (event) {
+  event.preventDefault();
+  const amount = Number(inputLoanAmount.value);
+  if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
+    currentAccount.movements.push(amount);
+    updateUI(currentAccount);
+  }
+  inputLoanAmount.value = '';
+  inputLoanAmount.blur();
+});
+
+labelBalance.addEventListener('click', function (event) {
+  event.preventDefault();
+  const movementsUI = Array.from(
+    document.querySelectorAll('.movements__value'),
+    el => Number(el.textContent.replace(' EUR', ''))
+  );
+});
+
+/**************************/
+//Array Methods Practice
+
+//1. Sum of all deposits
+const bankDepositsSum = accounts
+  .flatMap(acc => acc.movements)
+  .filter(mov => mov > 0)
+  .reduce((sum, mov) => sum + mov, 0);
+console.log(bankDepositsSum);
+
+//2. Count how many deposits into bank accounts that were at least 1000$
+const bigDepositsCountSol1 = accounts
+  .flatMap(acc => acc.movements)
+  .filter(mov => mov > 1000).length;
+console.log(bigDepositsCountSol1);
+
+const bigDepositsCountSol2 = accounts
+  .flatMap(acc => acc.movements)
+  .reduce((count, val) => (val > 1000 ? ++count : count), 0);
+console.log(bigDepositsCountSol2);
+
+// Create an object which holds the sums of deposits and withdrawls
+const sumsObject = accounts
+  .flatMap(acc => acc.movements)
+  .reduce(
+    (sums, mov) => {
+      mov > 0 ? (sums.deposits += mov) : (sums.withdrawls += mov);
+      return sums;
+    },
+    { deposits: 0, withdrawls: 0 }
+  );
+console.log(sumsObject);
+
+const { deposits, withdrawls } = accounts
+  .flatMap(acc => acc.movements)
+  .reduce(
+    (sums, mov) => {
+      mov > 0 ? (sums.deposits += mov) : (sums.withdrawls += mov);
+      return sums;
+    },
+    { deposits: 0, withdrawls: 0 }
+  );
+console.log(`deposits: ${deposits}, withdrawls: ${withdrawls}`);
+
+const fixedSumsObject = accounts
+  .flatMap(acc => acc.movements)
+  .reduce(
+    (sums, mov) => {
+      sums[mov > 0 ? 'deposits' : 'withdrawls'] += mov;
+      return sums;
+    },
+    { deposits: 0, withdrawls: 0 }
+  );
+console.log(fixedSumsObject);
