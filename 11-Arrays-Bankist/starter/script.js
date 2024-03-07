@@ -207,6 +207,13 @@ labelBalance.addEventListener('click', function (event) {
   );
 });
 
+let sorted = false;
+btnSort.addEventListener('click', function (event) {
+  event.preventDefault();
+  displayMovements(currentAccount.movements, !sorted);
+  sorted = !sorted;
+});
+
 /**************************/
 //Array Methods Practice
 
@@ -261,10 +268,3 @@ const fixedSumsObject = accounts
     { deposits: 0, withdrawls: 0 }
   );
 console.log(fixedSumsObject);
-
-let sorted = false;
-btnSort.addEventListener('click', function (event) {
-  event.preventDefault();
-  displayMovements(currentAccount.movements, !sorted);
-  sorted = !sorted;
-});
