@@ -86,14 +86,11 @@ const foramtMovmentDate = function (date, locale) {
     Math.abs(date2 - date1) / (1000 * 60 * 60 * 24);
   const daysPassed = Math.round(calcDaysPassed(new Date(), date));
 
-  console.log(daysPassed);
-  let formattedDateString = `
-${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate().padStart(2, 0)}`;
   if (daysPassed === 0) return 'Today';
   if (daysPassed === 1) return 'Yesterday';
   if (daysPassed <= 7) return `${daysPassed} days ago`;
 
-  return formattedDateString;
+  return new Intl.DateTimeFormat(locale).format(date);
 };
 
 const displayMovements = function (acc, sort = false) {
@@ -198,11 +195,27 @@ btnLogin.addEventListener('click', function (e) {
     }`;
     containerApp.style.opacity = 100;
     const now = new Date();
-    const day = `${now.getDate()}`.padStart(2, 0);
-    const month = `${now.getMonth() + 1}`.padStart(2, 0);
-    const year = now.getFullYear();
-    const hours = `${now.getHours()}`.padStart(2, 0);
-    const minutes = `${now.getMinutes()}`.padStart(2, 0);
+    const options = {
+      hour: 'numeric',
+      minute: 'numeric',
+      day: 'numeric',
+      month: '2-digit',
+      year: 'numeric',
+      weekday: 'long',
+    };
+
+    const locale = navigator.language;
+    console.log(locale);
+
+    const formattedDate = new Intl.DateTimeFormat(locale, options).format(now);
+    console.log(formattedDate);
+
+    // const now = new Date();
+    // const day = `${now.getDate()}`.padStart(2, 0);
+    // const month = `${now.getMonth() + 1}`.padStart(2, 0);
+    // const year = now.getFullYear();
+    // const hours = `${now.getHours()}`.padStart(2, 0);
+    // const minutes = `${now.getMinutes()}`.padStart(2, 0);
 
     labelDate.textContent = `${day}/${month}/${year}, ${hours}:${minutes}`;
 
@@ -283,6 +296,23 @@ btnSort.addEventListener('click', function (e) {
   displayMovements(currentAccount, !sorted);
   sorted = !sorted;
 });
+
+const now = new Date();
+const options = {
+  hour: 'numeric',
+  minute: 'numeric',
+  day: 'numeric',
+  month: '2-digit',
+  year: 'numeric',
+  weekday: 'long',
+};
+
+const locale = navigator.language;
+console.log(locale);
+
+const formattedDate = new Intl.DateTimeFormat(locale, options).format(now);
+console.log(formattedDate);
+// Output: sexta-feira, 30/07/2021 16:43
 
 // labelBalance.addEventListener('click', function () {
 //   [...document.querySelectorAll('.movements__row')].forEach(function (row, i) {
