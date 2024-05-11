@@ -153,3 +153,52 @@ setTimeout(() => h1.removeEventListener('mouseenter', alertH1), 3000);
 //   top: s1coords.top + window.pageYOffset,
 //   behavior: 'smooth',
 // });
+
+const randomInt = (min, max) =>
+  Math.floor(Math.random() * (max - min + 1) + min);
+
+const randomColor = () =>
+  `rgb(${randomInt(0, 255)}, ${randomInt(0, 255)}, ${randomInt(0, 255)})`;
+
+document
+  .querySelector('.nav__link')
+  .addEventListener('click', function (event) {
+    this.style.backgroundColor = randomColor();
+    console.log('LINK', event.target, event.currentTarget);
+  });
+
+document
+  .querySelector('.nav__links')
+  .addEventListener('click', function (event) {
+    this.style.backgroundColor = randomColor();
+    console.log('CONTAINER', event.target, event.currentTarget);
+  });
+
+document.querySelector('.nav').addEventListener('click', function (event) {
+  event.stopPropagation();
+  this.style.backgroundColor = randomColor();
+  console.log('NAV', event.target, event.currentTarget);
+});
+
+// document
+//   .querySelector('.nav__linkS')
+//   .addEventListener('click', function (event) {
+//     // event handling...
+//   });
+
+// document
+//   .querySelector('.nav__linkS')
+//   .addEventListener('click', function (event) {
+//     if (event.target.classList.contains('nav__linK')) {
+//       // handling the click event on <li> element
+//     }
+//   });
+
+document
+  .querySelector('.nav__links')
+  .addEventListener('click', function (event) {
+    if (event.target.classList.contains('nav__link')) {
+      event.preventDefault();
+      // handling the click event on <li> element
+    }
+  });
