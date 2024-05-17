@@ -154,31 +154,31 @@ setTimeout(() => h1.removeEventListener('mouseenter', alertH1), 3000);
 //   behavior: 'smooth',
 // });
 
-const randomInt = (min, max) =>
-  Math.floor(Math.random() * (max - min + 1) + min);
+// const randomInt = (min, max) =>
+//   Math.floor(Math.random() * (max - min + 1) + min);
 
-const randomColor = () =>
-  `rgb(${randomInt(0, 255)}, ${randomInt(0, 255)}, ${randomInt(0, 255)})`;
+// const randomColor = () =>
+//   `rgb(${randomInt(0, 255)}, ${randomInt(0, 255)}, ${randomInt(0, 255)})`;
 
-document
-  .querySelector('.nav__link')
-  .addEventListener('click', function (event) {
-    this.style.backgroundColor = randomColor();
-    console.log('LINK', event.target, event.currentTarget);
-  });
+// document
+//   .querySelector('.nav__link')
+//   .addEventListener('click', function (event) {
+//     this.style.backgroundColor = randomColor();
+//     console.log('LINK', event.target, event.currentTarget);
+//   });
 
-document
-  .querySelector('.nav__links')
-  .addEventListener('click', function (event) {
-    this.style.backgroundColor = randomColor();
-    console.log('CONTAINER', event.target, event.currentTarget);
-  });
+// document
+//   .querySelector('.nav__links')
+//   .addEventListener('click', function (event) {
+//     this.style.backgroundColor = randomColor();
+//     console.log('CONTAINER', event.target, event.currentTarget);
+//   });
 
-document.querySelector('.nav').addEventListener('click', function (event) {
-  event.stopPropagation();
-  this.style.backgroundColor = randomColor();
-  console.log('NAV', event.target, event.currentTarget);
-});
+// document.querySelector('.nav').addEventListener('click', function (event) {
+//   event.stopPropagation();
+//   this.style.backgroundColor = randomColor();
+//   console.log('NAV', event.target, event.currentTarget);
+// });
 
 // document
 //   .querySelector('.nav__linkS')
@@ -194,11 +194,35 @@ document.querySelector('.nav').addEventListener('click', function (event) {
 //     }
 //   });
 
-document
-  .querySelector('.nav__links')
-  .addEventListener('click', function (event) {
-    if (event.target.classList.contains('nav__link')) {
-      event.preventDefault();
-      // handling the click event on <li> element
-    }
-  });
+// document
+//   .querySelector('.nav__links')
+//   .addEventListener('click', function (event) {
+//     if (event.target.classList.contains('nav__link')) {
+//       event.preventDefault();
+//       // handling the click event on <li> element
+//     }
+//
+
+const h1children = h1.querySelectorAll('.highlight');
+console.log(h1children.childNodes()); // Not used
+console.log(h1children.children()); // Far more used
+
+h1.firstElementChild.style.color = 'white'; // firstElementChild is used to select the first element child
+h1.lastElementChild.style.color = 'orangered'; // lastElementChild is used to select the last element child
+
+const h1parent = h1;
+console.log(h1parent.parentNode); // Not used
+console.log(h1parent.parentElement); // Far more used
+
+h1.closest('.header').style.background = 'var(--gradient-secondary)'; // closest is used to select the closest parent element
+
+h1.closest('h1').style.background = 'var(--gradient-primary)'; // closest is used to select the closest parent element
+
+// Going sideways: selecting sibling elements
+console.log(h1.previousElementSibling); // Not used
+console.log(h1.nextElementSibling); // Not used
+
+console.log(h1.previousSibling); // Not used
+console.log(h1.nextSibling); // Not used
+
+console.log(h1.parentElement.children);
