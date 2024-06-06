@@ -7,7 +7,7 @@ const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
 const btnCloseModal = document.querySelector('.btn--close-modal');
 const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
-
+const section1 = document.querySelector('#section--1');
 const openModal = function (event) {
   event.preventDefault();
   modal.classList.remove('hidden');
@@ -35,7 +35,7 @@ const section = document.querySelector('#section--1');
 
 btnScrollTo.addEventListener('click', function (event) {
   const s1coords = section1.getBoundingClientRect();
-  console.log(e.targer.getBoundingClientRect());
+  console.log(e.target.getBoundingClientRect());
 
   section1.scrollIntoView({ behavior: 'smooth' });
 });
@@ -226,26 +226,124 @@ tabsContainer.addEventListener('click', function (event) {
 //     }
 //
 
-const h1children = h1.querySelectorAll('.highlight');
-console.log(h1children.childNodes()); // Not used
-console.log(h1children.children()); // Far more used
+// const h1children = h1.querySelectorAll('.highlight');
+// console.log(h1children.childNodes()); // Not used
+// console.log(h1children.children()); // Far more used
 
-h1.firstElementChild.style.color = 'white'; // firstElementChild is used to select the first element child
-h1.lastElementChild.style.color = 'orangered'; // lastElementChild is used to select the last element child
+// h1.firstElementChild.style.color = 'white'; // firstElementChild is used to select the first element child
+// h1.lastElementChild.style.color = 'orangered'; // lastElementChild is used to select the last element child
 
-const h1parent = h1;
-console.log(h1parent.parentNode); // Not used
-console.log(h1parent.parentElement); // Far more used
+// const h1parent = h1;
+// console.log(h1parent.parentNode); // Not used
+// console.log(h1parent.parentElement); // Far more used
 
-h1.closest('.header').style.background = 'var(--gradient-secondary)'; // closest is used to select the closest parent element
+// h1.closest('.header').style.background = 'var(--gradient-secondary)'; // closest is used to select the closest parent element
 
-h1.closest('h1').style.background = 'var(--gradient-primary)'; // closest is used to select the closest parent element
+// h1.closest('h1').style.background = 'var(--gradient-primary)'; // closest is used to select the closest parent element
 
-// Going sideways: selecting sibling elements
-console.log(h1.previousElementSibling); // Not used
-console.log(h1.nextElementSibling); // Not used
+// // Going sideways: selecting sibling elements
+// console.log(h1.previousElementSibling); // Not used
+// console.log(h1.nextElementSibling); // Not used
 
-console.log(h1.previousSibling); // Not used
-console.log(h1.nextSibling); // Not used
+// console.log(h1.previousSibling); // Not used
+// console.log(h1.nextSibling); // Not used
 
-console.log(h1.parentElement.children);
+// console.log(h1.parentElement.children);
+
+const nav = document.querySelector('.nav');
+
+const handleHover = function (event) {
+  if (event.target.classList.contains('nav__link')) {
+    const link = event.target;
+    const siblings = link.closest('.nav').querySelectorAll('.nav__link');
+    const logo = link.closest('.nav').querySelector('img');
+    siblings.forEach(el => {
+      if (el !== link) {
+        el.style.opacity = this;
+      }
+    });
+    logo.style.opacity = this;
+  }
+};
+
+// Passing "argument" into handler
+nav.addEventListener('mouseover', handleHover.bind(0.5));
+nav.addEventListener('mouseout', handleHover.bind(1));
+
+// window.addEventListener('scroll', function () {
+//   const initialCoords = section1.getBoundingClientRect();
+//   console.log(initialCoords);
+//   if (window.scrollY > initialCoords.top) nav.classList.add('sticky');
+//   else nav.classList.remove('sticky');
+// });
+
+// const observerCallBack = function (entries, observer) {
+//   entries.forEach(entry => {
+//     console.log(entry);
+//   });
+// };
+// const observerOptions = {
+//   root: null,
+//   threshold: [0, 0.2],
+// // };
+// const observer = new IntersectionObserver(observerCallBack, observerOptions);
+// observer.observe(section1);
+
+const header = document.querySelector('.header');
+const navHeight = nav.getBoundingClientRect().height;
+
+const stickyNav = function (entries) {
+  const [entry] = entries;
+  if (!entry.isIntersecting) nav.classList.add('sticky');
+  else nav.classList.remove('sticky');
+};
+const headerObserver = new IntersectionObserver(stickyNav, {
+  root: null,
+  threshold: 0,
+  rootMargin: `-${navHeight}px`, //around -90px
+});
+headerObserver.observe(header);
+
+const allSection = document.querySelectorAll('.section');
+
+const revealSection = function (entries, observer) {
+  const [entry] = entries;
+  if (!entry.isIntersecting) return;
+  entry.target.classList.remove('section--hidden');
+  observer.unobserve(entry.target); // this is bascially sectionObserver.
+};
+
+const sectionObserver = new IntersectionObserver(revealSection, {
+  root: null,
+  threshold: 0.15,
+});
+
+allSection.forEach(function (section) {
+  // this is for the initial loading of the page
+  // we attach the observer, and then hiding all the section elements, as an initial state.
+  sectionObserver.observe(section);
+  section.classList.add('section--hidden');
+});
+
+const imgTargets = document.querySelectorAll('img[data-src]');
+
+const loadImg = function (entries, observer) {
+  const [entry] = entries;
+  console.log(entry);
+  if (!entry.isIntersecting) return;
+  entry.target.src = entry.target.dataset.src;
+  //entry.target.classList.remove('lazy-img') // We dont want to do this since on slower networks the pictures will still be blurry until they are loaded into the page. by doing this we remove the class right away. so we use the event listener for that because when the image is finished loading, a load event pops, and only then we want to remove the lazy-img class.
+
+  entry.target.addEventListener('load', function () {
+    entry.target.classList.remove('lazy-img');
+  });
+  observer.unobserve(entry.target);
+};
+
+const imgObserver = new IntersectionObserver(loadImg, {
+  root: null,
+  threshold: 0,
+  rootMargin: '200px',
+});
+
+imgTargets.forEach(img => imgObserver.observe(img));
