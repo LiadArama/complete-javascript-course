@@ -28,8 +28,14 @@ jonas.calcAge();
 //Output: 46
 
 Person.prototype.species = 'Homo Sapiens';
+console.log(Person.prototype);
+// Output: {calcAge: ƒ, species: 'Homo Sapiens', constructor: ƒ}
 console.log(jonas.species);
 // Output: Homo Sapiens
 
 console.log(jonas.hasOwnProperty('species')); // false
 console.log(jonas.hasOwnProperty('firstName')); // true
+
+console.log(jonas.__proto__);
+// Output: {calcAge: ƒ, species: 'Homo Sapiens', constructor: ƒ}
+console.log();
