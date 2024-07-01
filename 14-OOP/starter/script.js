@@ -40,32 +40,32 @@
 // // Output: {calcAge: ƒ, species: 'Homo Sapiens', constructor: ƒ}
 // console.log();
 
-class Person {
-  constructor(firstName, birthYear) {
-    this.firstName = firstName;
-    this.birthYear = birthYear;
-  }
+// class Person {
+//   constructor(firstName, birthYear) {
+//     this.firstName = firstName;
+//     this.birthYear = birthYear;
+//   }
 
-  calcAge() {
-    console.log(2037 - this.birthYear);
-  }
+//   calcAge() {
+//     console.log(2037 - this.birthYear);
+//   }
 
-  greet() {
-    console.log(`Hey ${this.firstName}`);
-  }
+//   greet() {
+//     console.log(`Hey ${this.firstName}`);
+//   }
 
-  get age() {
-    return this.calcAge();
-  }
+//   get age() {
+//     return this.calcAge();
+//   }
 
-  set setFirstName(firstName) {
-    this.firstName = firstName;
-  }
+//   set setFirstName(firstName) {
+//     this.firstName = firstName;
+//   }
 
-  static hey() {
-    console.log('hi');
-  }
-}
+//   static hey() {
+//     console.log('hi');
+//   }
+// }
 
 // const account = {
 //   owner: 'jonas',
@@ -105,32 +105,61 @@ class Person {
 //   console.log('Hey there');
 // };
 
-const Person = {
-  calcAge() {
-    console.log(2037 - this.birthYear);
-  },
+// const Person = {
+//   calcAge() {
+//     console.log(2037 - this.birthYear);
+//   },
 
-  init(firstName, birthYear) {
-    this.firstName = firstName;
-    this.birthYear = birthYear;
-  },
+//   init(firstName, birthYear) {
+//     this.firstName = firstName;
+//     this.birthYear = birthYear;
+//   },
+// };
+
+// const steven = Object.create(Person);
+// steven.name = 'Steven';
+// steven.birthYear = 2002;
+// steven.calcAge();
+// // Output: 35
+
+// console.log(steven.__proto__);
+// // Output: {calcAge: ƒ}
+
+// console.log(steven);
+// // Output: {name: "Steven", birthYear: 2002, proto: {calcAge: ƒ}}
+
+// const sarah = Object.create(Person);
+// sarah.init('Sarah', 1979);
+// sarah.calcAge();
+// // Output: 58
+// console.log(sarah);
+// // Output: {firstName: "Sarah", birthYear: 1979, proto: {calcAge: ƒ}}
+
+const Person = function (firstName, birthYear) {
+  // Instance properties
+  this.firstName = firstName;
+  this.birthYear = birthYear;
 };
 
-const steven = Object.create(Person);
-steven.name = 'Steven';
-steven.birthYear = 2002;
-steven.calcAge();
-// Output: 35
+Person.prototype.calcAge = function () {
+  console.log(2037 - this.birthYear);
+};
 
-console.log(steven.__proto__);
-// Output: {calcAge: ƒ}
+const Student = function (firstName, birthYear, course) {
+  Person.call(this, firstName, birthYear);
+  this.course = course;
+};
 
-console.log(steven);
-// Output: {name: "Steven", birthYear: 2002, proto: {calcAge: ƒ}}
+Student.prototype = Object.create(Person.prototype);
+Student.prototype.constructor = Student;
 
-const sarah = Object.create(Person);
-sarah.init('Sarah', 1979);
-sarah.calcAge();
-// Output: 58
-console.log(sarah);
-// Output: {firstName: "Sarah", birthYear: 1979, proto: {calcAge: ƒ}}
+Student.prototype.introduce = function () {
+  console.log(`My name is ${this.firstName} and I study ${this.course}`);
+};
+
+const mike = new Student('Mike', 2020, 'Computer Science');
+mike.introduce();
+console.log(Person.prototype);
+// Output: {calcAge: ƒ, constructor: ƒ}
+console.log(Student.prototype.constructor);
+console.log(mike.__proto__.__proto__);
