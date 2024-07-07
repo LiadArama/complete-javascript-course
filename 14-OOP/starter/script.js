@@ -165,6 +165,8 @@
 // console.log(mike.__proto__.__proto__);
 
 class Person {
+  #locale = 'USA';
+
   constructor(firstName, birthYear) {
     this.firstName = firstName;
     this._birthYear = birthYear;
