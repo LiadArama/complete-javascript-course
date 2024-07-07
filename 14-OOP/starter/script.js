@@ -135,31 +135,68 @@
 // console.log(sarah);
 // // Output: {firstName: "Sarah", birthYear: 1979, proto: {calcAge: ƒ}}
 
-const Person = function (firstName, birthYear) {
-  // Instance properties
-  this.firstName = firstName;
-  this.birthYear = birthYear;
-};
+// const Person = function (firstName, birthYear) {
+//   // Instance properties
+//   this.firstName = firstName;
+//   this.birthYear = birthYear;
+// };
 
-Person.prototype.calcAge = function () {
-  console.log(2037 - this.birthYear);
-};
+// Person.prototype.calcAge = function () {
+//   console.log(2037 - this.birthYear);
+// };
 
-const Student = function (firstName, birthYear, course) {
-  Person.call(this, firstName, birthYear);
-  this.course = course;
-};
+// const Student = function (firstName, birthYear, course) {
+//   Person.call(this, firstName, birthYear);
+//   this.course = course;
+// };
 
-Student.prototype = Object.create(Person.prototype);
-Student.prototype.constructor = Student;
+// Student.prototype = Object.create(Person.prototype);
+// Student.prototype.constructor = Student;
 
-Student.prototype.introduce = function () {
-  console.log(`My name is ${this.firstName} and I study ${this.course}`);
-};
+// Student.prototype.introduce = function () {
+//   console.log(`My name is ${this.firstName} and I study ${this.course}`);
+// };
 
-const mike = new Student('Mike', 2020, 'Computer Science');
-mike.introduce();
-console.log(Person.prototype);
-// Output: {calcAge: ƒ, constructor: ƒ}
-console.log(Student.prototype.constructor);
-console.log(mike.__proto__.__proto__);
+// const mike = new Student('Mike', 2020, 'Computer Science');
+// mike.introduce();
+// console.log(Person.prototype);
+// // Output: {calcAge: ƒ, constructor: ƒ}
+// console.log(Student.prototype.constructor);
+// console.log(mike.__proto__.__proto__);
+
+class Person {
+  constructor(firstName, birthYear) {
+    this.firstName = firstName;
+    this._birthYear = birthYear;
+  }
+
+  calcAge() {
+    console.log(2037 - this.birthYear);
+  }
+
+  greet() {
+    console.log(`Hey ${this.firstName}`);
+  }
+
+  get age() {
+    return this.calcAge();
+  }
+
+  set setFirstName(firstName) {
+    this.firstName = firstName;
+  }
+
+  static hey() {
+    console.log('hi');
+  }
+}
+
+class Student extends Person {
+  constructor(firstName, birthYear, course) {
+    super(firstName, birthYear); // This always needs to be first!
+    this.course = course;
+  }
+}
+
+const newS = new Student('Liad', 2012, 'Cs');
+newS.console.log(newS);
