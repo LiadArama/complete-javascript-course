@@ -1,7 +1,6 @@
 'use strict';
-
-const btn = document.querySelector('.btn-country');
-const countriesContainer = document.querySelector('.countries');
+// const btn = document.querySelector('.btn-country');
+// const countriesContainer = document.querySelector('.countries');
 
 ///////////////////////////////////////
 /*https://countries-api-836d.onrender.com/countries/*/
@@ -62,4 +61,27 @@ const getCountryData = function (country) {
   });
 };
 
-getCountryData('usa');
+// const request = new XMLHttpRequest(); // Old school way.
+// request.open(
+//   'GET',
+//   `https://countries-api-836d.onrender.com/countries/name/israel`
+// );
+// request.send();
+
+// request.addEventListener('load', function () {
+//   const [data] = JSON.parse(this.responseText);
+//   console.log(data);
+// });
+
+// getCountryData('usa');
+
+const getCountryDataPromise = function (country) {
+  const requestPromise = fetch(
+    `https://countries-api-836d.onrender.com/countries/name/${country}`
+  ); // This creates a Promise object.
+  requestPromise
+    .then(response => response.json()) // this returns another "Response" promise object which contains all the data for the request itself, like 200 OK, Headers and so on... Based on the response code, which is inside the "Response" Promise object, we can determine if its fullfiled or not.
+    .then(responseData => console.log(responseData)); // then we can export the data out of the fullfiled Response promise object.
+};
+
+getCountryDataPromise('portugal');
