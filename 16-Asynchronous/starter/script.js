@@ -1,12 +1,12 @@
 'use strict';
-// const btn = document.querySelector('.btn-country');
-// const countriesContainer = document.querySelector('.countries');
+const btn = document.querySelector('.btn-country');
+const countriesContainer = document.querySelector('.countries');
 
 ///////////////////////////////////////
 /*https://countries-api-836d.onrender.com/countries/*/
 
 const renderCountry = function (data, className = '') {
-  const htmlTemplate = `        
+  const htmlTemplate = `   
         <article class="country ${className}">
           <img class="country__img" src="${data.flag}" />
           <div class="country__data">
@@ -75,13 +75,37 @@ const getCountryData = function (country) {
 
 // getCountryData('usa');
 
+const renderError = function (msg) {
+  countriesContainer.insertAdjacentText('beforeend', msg);
+  countriesContainer.style.opacity = 1;
+};
+
 const getCountryDataPromise = function (country) {
   const requestPromise = fetch(
     `https://countries-api-836d.onrender.com/countries/name/${country}`
-  ); // This creates a Promise object.
+  );
   requestPromise
-    .then(response => response.json()) // this returns another "Response" promise object which contains all the data for the request itself, like 200 OK, Headers and so on... Based on the response code, which is inside the "Response" Promise object, we can determine if its fullfiled or not.
-    .then(responseData => console.log(responseData)); // then we can export the data out of the fullfiled Response promise object.
+    .then(response => {
+      response.json();
+      if (!response.ok) {
+        throw new Error(`Country not found (${response.status})`);
+      }
+    })
+    .then(responseData => {
+      renderCountry(responseData[0]);
+      const neighbor = responseData[0].borders?.[0];
+      return fetch(
+        `https://countries-api-836d.onrender.com/countries/alpha/${neighbor}`
+      );
+    })
+    .then(response => response.json())
+    .then(responseData => renderCountry(responseData, 'neighbour'))
+    .catch(err => {
+      console.error(err);
+      renderError(`Something went wrong! ${err.message}`);
+    });
 };
 
-getCountryDataPromise('portugal');
+btn.addEventListener('click', function () {
+  getCountryDataPromise('portugal');
+});
