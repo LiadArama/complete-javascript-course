@@ -106,9 +106,9 @@ const getCountryDataPromise = function (country) {
     });
 };
 
-btn.addEventListener('click', function () {
-  getCountryDataPromise('portugal');
-});
+// btn.addEventListener('click', function () {
+//   getCountryDataPromise('portugal');
+// });
 
 ///////////////////////////////////////
 
@@ -137,32 +137,171 @@ TEST COORDINATES 2: -33.933, 18.474
 
 GOOD LUCK 😀
 */
+const getPoisition = function () {
+  return new Promise(function (resolve, reject) {
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
+};
 
-// const whereAmI = function (lat, lng) {
-//   const locationRequestPromise = fetch(
-//     `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`
-//   );
-//   locationRequestPromise
-//     .then(requestResult => {
-//       if (!requestResult.ok)
-//         throw new Error(
-//           `Fetching with the following coordinates:\nLatitude: ${lat}\nLongitude${lng} has failed!`
-//         );
-//       return requestResult.json();
-//     })
-//     .then(requestData => {
-//       console.log(`You are in ${requestData.city}, ${requestData.countryName}`);
-//       getCountryDataPromise(requestData.countryName.toLowerCase());
-//     })
-//     .catch(error => console.error(`An error has occured!\n${error}`));
-//   return locationRequestPromise;
-// };
+const whereAmI = function () {
+  getPoisition()
+    .then(pos => {
+      const { latitude: lat, longitude: lng } = pos.coords;
+      return fetch(
+        `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`
+      );
+    })
+    .then(requestResult => {
+      if (!requestResult.ok)
+        throw new Error(
+          `Fetching with the following coordinates:\nLatitude: ${lat}\nLongitude${lng} has failed!`
+        );
+      return requestResult.json();
+    })
+    .then(requestData => {
+      console.log(`You are in ${requestData.city}, ${requestData.countryName}`);
+      getCountryDataPromise(requestData.countryName.toLowerCase());
+    })
+    .catch(error => console.error(`An error has occured!\n${error}`));
+  return locationRequestPromise;
+};
 
 // // console.log(whereAmI(52.508, 13.381));
 // // whereAmI(52.508, 13.381);
 
-// btn.addEventListener('click', function () {
-//   whereAmI(52.508, 13.381);
+// btn.addEventListener('click', whereAmI);
+
+// const lotteryPromise = new Promise(function (resolve, reject) {
+//   if (Math.random() >= 0.5) resolve('You WIN!');
+//   else reject(new Error('You LOSE!'));
 // });
 
-const lotteryPromise = new Promise(function (resolve, reject) {});
+// lotteryPromise.then(res => console.log(res)).catch(err => console.log(err));
+
+// const wait = function (seconds) {
+//   return new Promise(function (resolve) {
+//     setTimeout(resolve, seconds * 1000); // The resolve function is the callback function that we want to be called after a certain time. --> after amount of seconds, initiate the resolve function.
+//   });
+// };
+
+// wait(2)
+//   .then(() => {
+//     // Nothing is passed to the then method becausae there is no returned value.
+//     console.log('I waited for 2 seconds');
+//     return wait(1);
+//   })
+//   .then(() => console.log('I waited for 1 second'));
+
+// Promise.resolve('You win!').then(x => console.log(x));
+// Promise.reject(new Error('You lose')).catch(x => console.error(x));
+
+///////////////////////////////////////
+
+// Coding Challange #2
+
+/* 
+Build the image loading functionality that I just showed you on the screen.
+
+Tasks are not super-descriptive this time, so that you can figure out some stuff on your own. Pretend you're working on your own 😉
+
+PART 1
+1. Create a function 'createImage' which receives imgPath as an input. This function returns a promise which creates a new image (use document.createElement('img')) and sets the .src attribute to the provided image path. When the image is done loading, append it to the DOM element with the 'images' class, and resolve the promise. The fulfilled value should be the image element itself. In case there is an error loading the image ('error' event), reject the promise.
+
+If this part is too tricky for you, just watch the first part of the solution.
+
+PART 2
+2. Comsume the promise using .then and also add an error handler;
+3. After the image has loaded, pause execution for 2 seconds using the wait function we created earlier;
+4. After the 2 seconds have passed, hide the current image (set display to 'none'), and load a second image (HINT: Use the image element returned by the createImage promise to hide the current image. You will need a global variable for that 😉);
+5. After the second image has loaded, pause execution for 2 seconds again;
+6. After the 2 seconds have passed, hide the current image.
+
+TEST DATA: Images in the img folder. Test the error handler by passing a wrong image path. Set the network speed to 'Fast 3G' in the dev tools Network tab, otherwise images load too fast.
+
+GOOD LUCK 😀
+*/
+
+const pause = function (seconds) {
+  return new Promise(resolve => setTimeout(resolve, seconds * 1000));
+};
+
+const createImage = function (imgPath) {
+  return new Promise((resolve, reject) => {
+    const ImgsDiv = document.querySelector('.images');
+    const newImg = document.createElement('img');
+    newImg.setAttribute('src', imgPath);
+    newImg.setAttribute('class', 'parallel');
+
+    newImg.addEventListener('load', () => {
+      ImgsDiv.appendChild(newImg);
+      resolve(newImg);
+    });
+
+    newImg.addEventListener('error', () =>
+      reject(new Error('Error has occured loading the image!'))
+    );
+  });
+};
+
+let currentImg;
+
+createImage('../starter/img/img-1.jpg')
+  .then(newImg => {
+    currentImg = newImg;
+    return pause(2);
+  })
+  .then(() => {
+    currentImg.style.display = 'none';
+    return createImage('../starter/img/img-2.jpg');
+  })
+  .then(newImg => {
+    currentImg = newImg;
+    return pause(2);
+  })
+  .then(() => {
+    currentImg.style.display = 'none';
+    return createImage('../starter/img/img-3.jpg');
+  })
+  .then(newImg => {
+    currentImg = newImg;
+    return pause(2);
+  })
+  .then(() => {
+    currentImg.style.display = 'none';
+  })
+  .catch(error => console.error(error));
+
+/*
+We need to promisify the pause function in order to force the code to wait for the promise to be handled right after two seconds.
+if we try to sue setTimeout without wrapping in inside a Promise, they all will be executed together, after two seconds, after all promises were fulfilled.
+Rememeber, Promises has priority over callback function!
+All promises go to the microtasks, which there we first execute all promises and only then we execute the macrotasks (callback functions) queue.
+
+If we were to use setTimeout without wrapping it inside a Promise, all setTimeouts will got to the macrotasks (callback) queue, and all promises will go to the microtasks queue.
+By wrapping the setTimeout inside the Promise in "pause" function, we basically passing this setTimout into the microtasks queue, to handle the resolve after two seconds, and only then
+to proceed to the next microtasks (promise).
+*/
+
+createImage('../starter/img/img-1.jpg')
+  .then(newImg => {
+    setTimeout(() => {
+      console.log('Waiting 1');
+    }, 2 * 1000);
+    newImg.style.display = 'none';
+    return createImage('../starter/img/img-2.jpg');
+  })
+  .then(newImg => {
+    setTimeout(() => {
+      console.log('Waiting 2');
+    }, 2 * 1000);
+    newImg.style.display = 'none';
+    return createImage('../starter/img/img-3.jpg');
+  })
+  .then(newImg => {
+    setTimeout(() => {
+      console.log('Waiting 3');
+    }, 2 * 1000);
+    newImg.style.display = 'none';
+  })
+  .catch(error => console.error(error));
+///////////////////////////////////////
