@@ -305,3 +305,45 @@ createImage('../starter/img/img-1.jpg')
   })
   .catch(error => console.error(error));
 ///////////////////////////////////////
+
+const getPosition = async function () {
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
+};
+
+const whereAmIAsyncAwait = async function (country) {
+  try {
+    const pos = await getPosition();
+    const { latitude: lat, longitude: lng } = pos.coords;
+    const resGeo = await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`);
+    const dataGeo = await resGeo.json();
+    const response = await fetch(
+      `https://countries-api-836d.onrender.com/countries/name/${country}`
+    );
+    const data = await response.json();
+    console.log(data);
+    renderCountry(data[0]);
+  } catch (err) {
+    console.error(err);
+    renderError(`Something went wrong! ${err.message}`);
+    // Reject promise returned from async function
+    throw err;
+  }
+};
+
+// (async function () {
+//   // Old way of ES2022 top-level async/await
+//   try {
+//     const city = await whereAmIAsyncAwait('portugal');
+//     console.log(city);
+//   } catch (err) {
+//     console.error(err);
+//   }
+//   console.log(`2: Finished getting location`);
+// });
+console.log(`1: Will get location`);
+
+const city = await whereAmIAsyncAwait('portugal');
+
+console.log(`3: Getting location`);
